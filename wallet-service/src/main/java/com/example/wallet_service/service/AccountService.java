@@ -59,7 +59,7 @@ public class AccountService {
     @Transactional
     public void deleteAccount(Long id) {
         Account account = getAccount(id);
-        walletRepository.findByAccountId(id).ifPresent(walletRepository::delete);
+        walletRepository.findByAccount_Id(id).ifPresent(walletRepository::delete);
         accountRepository.delete(account);
     }
 

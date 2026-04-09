@@ -20,7 +20,7 @@ public class WalletService {
 
     @Transactional
     public Wallet deposit(Long accountId, Double amount) {
-        Wallet wallet = walletRepository.findByAccountId(accountId)
+        Wallet wallet = walletRepository.findByAccount_Id(accountId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
         wallet.setBalance(wallet.getBalance() + amount);
@@ -39,7 +39,7 @@ public class WalletService {
 
     @Transactional
     public Wallet withdraw(Long accountId, Double amount) {
-        Wallet wallet = walletRepository.findByAccountId(accountId)
+        Wallet wallet = walletRepository.findByAccount_Id(accountId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
         if (wallet.getBalance() < amount) {
@@ -62,10 +62,10 @@ public class WalletService {
 
     @Transactional
     public String transfer(Long fromAccountId, Long toAccountId, Double amount) {
-        Wallet fromWallet = walletRepository.findByAccountId(fromAccountId)
+        Wallet fromWallet = walletRepository.findByAccount_Id(fromAccountId)
                 .orElseThrow(() -> new RuntimeException("Sender wallet not found"));
 
-        Wallet toWallet = walletRepository.findByAccountId(toAccountId)
+        Wallet toWallet = walletRepository.findByAccount_Id(toAccountId)
                 .orElseThrow(() -> new RuntimeException("Receiver wallet not found"));
 
         if (fromWallet.getBalance() < amount) {
@@ -91,7 +91,7 @@ public class WalletService {
     }
 
     public Wallet getWallet(Long accountId) {
-        return walletRepository.findByAccountId(accountId)
+        return walletRepository.findByAccount_Id(accountId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
     }
 }

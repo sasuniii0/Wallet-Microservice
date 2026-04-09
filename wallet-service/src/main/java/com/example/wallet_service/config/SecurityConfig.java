@@ -40,11 +40,9 @@ public class SecurityConfig {
                 }))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/account/**", "/wallet/**").permitAll()
+                        .requestMatchers("/api/account/**", "/api/wallet/**", "/api/auth/**").permitAll()
                         .anyRequest().authenticated()
-                )
-
-                .httpBasic(Customizer.withDefaults());
+                );
 
         return http.build();
     }
