@@ -1,0 +1,182 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Wallet",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8081"
+    },
+    {
+      "url": "http://localhost:8080"
+    },
+    {
+      "url": "GET http://localhost:8080"
+    },
+    {
+      "url": ""
+    }
+  ],
+  "paths": {
+    "/api/wallet/deposit": {
+      "post": {
+        "summary": "deposit",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accountId": {
+                    "type": "integer"
+                  },
+                  "amount": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "accountId": 1,
+                "amount": 500
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/wallet/withdraw": {
+      "post": {
+        "summary": "withdraw",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accountId": {
+                    "type": "integer"
+                  },
+                  "amount": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "accountId": 1,
+                "amount": 200
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/wallet/transfer": {
+      "post": {
+        "summary": "transfer",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fromAccountId": {
+                    "type": "integer"
+                  },
+                  "toAccountId": {
+                    "type": "integer"
+                  },
+                  "amount": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "fromAccountId": 1,
+                "toAccountId": 2,
+                "amount": 300
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wallet/1": {
+      "get": {
+        "summary": "get the wallet",
+        "responses": {}
+      },
+      "delete": {
+        "summary": "delete account",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/account/create": {
+      "post": {
+        "summary": "create account",
+        "responses": {}
+      }
+    },
+    "/account/1": {
+      "get": {
+        "summary": "get account by id",
+        "responses": {}
+      },
+      "put": {
+        "summary": "update account",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "John Smith",
+                "email": "johnsmith@example.com",
+                "password": "newpassword123"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wallet/all": {
+      "get": {
+        "summary": "get all accounts",
+        "responses": {}
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "login",
+        "responses": {}
+      }
+    }
+  }
+}
