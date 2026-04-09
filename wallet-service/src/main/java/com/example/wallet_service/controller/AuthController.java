@@ -1,7 +1,9 @@
 package com.example.wallet_service.controller;
 
 import com.example.wallet_service.dto.ApiResponseDTO;
+import com.example.wallet_service.dto.LoginRequestDTO;
 import com.example.wallet_service.util.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,21 +21,16 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseDTO> login(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        String password = request.get("password");
-
+    public ResponseEntity<ApiResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
         Authentication auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
-
-        String token = jwtUtil.generateToken(email);
 
         return ResponseEntity.ok(
                 ApiResponseDTO.builder()
                         .status(200)
                         .message("Login successful")
-                        .data(Map.of("token", token))
+                        .data(Map.of("token", jwtUtil.generateToken(request.getEmail())))
                         .build()
         );
     }

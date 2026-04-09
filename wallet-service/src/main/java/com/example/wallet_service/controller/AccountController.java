@@ -1,7 +1,10 @@
 package com.example.wallet_service.controller;
 
 import com.example.wallet_service.dto.ApiResponseDTO;
+import com.example.wallet_service.dto.CreateAccountRequestDTO;
+import com.example.wallet_service.dto.UpdateAccountRequestDTO;
 import com.example.wallet_service.service.AccountService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +19,15 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponseDTO> createAccount(@RequestBody Map<String, String> request) {
+    public ResponseEntity<ApiResponseDTO> createAccount(@Valid @RequestBody CreateAccountRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ApiResponseDTO.builder()
                         .status(201)
                         .message("Account created successfully")
                         .data(accountService.createAccount(
-                                request.get("name"),
-                                request.get("email"),
-                                request.get("password")
+                                request.getName(),
+                                request.getEmail(),
+                                request.getPassword()
                         ))
                         .build()
         );
@@ -42,16 +45,16 @@ public class AccountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponseDTO> updateAccount(@PathVariable Long id, @RequestBody Map<String, String> request) {
+    public ResponseEntity<ApiResponseDTO> updateAccount(@PathVariable Long id, @Valid @RequestBody UpdateAccountRequestDTO request) {
         return ResponseEntity.ok(
                 ApiResponseDTO.builder()
                         .status(200)
                         .message("Account updated successfully")
                         .data(accountService.updateAccount(
                                 id,
-                                request.get("name"),
-                                request.get("email"),
-                                request.get("password")
+                                request.getName(),
+                                request.getEmail(),
+                                request.getPassword()
                         ))
                         .build()
         );

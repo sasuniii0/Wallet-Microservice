@@ -1,12 +1,14 @@
 package com.example.wallet_service.controller;
 
 import com.example.wallet_service.dto.ApiResponseDTO;
+import com.example.wallet_service.dto.TransferRequestDTO;
+import com.example.wallet_service.dto.WalletRequestDTO;
 import com.example.wallet_service.service.WalletService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,40 +17,30 @@ public class WalletController {
     private final WalletService walletService;
 
     @PostMapping("/deposit")
-    public ResponseEntity<ApiResponseDTO> deposit(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<ApiResponseDTO> deposit(@Valid @RequestBody WalletRequestDTO request) {
         return ResponseEntity.ok(
                 ApiResponseDTO.builder()
                         .status(200)
                         .message("Deposit successful")
-                        .data(walletService.deposit(
-                                Long.valueOf(request.get("accountId").toString()),
-                                Double.valueOf(request.get("amount").toString())
-                        ))
+                        .data(walletService.deposit(request.getAccountId(), request.getAmount()))
                         .build()
         );
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<ApiResponseDTO> withdraw(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<ApiResponseDTO> withdraw(@Valid @RequestBody WalletRequestDTO request) {
         return ResponseEntity.ok(
                 ApiResponseDTO.builder()
                         .status(200)
                         .message("Withdrawal successful")
-                        .data(walletService.withdraw(
-                                Long.valueOf(request.get("accountId").toString()),
-                                Double.valueOf(request.get("amount").toString())
-                        ))
+                        .data(walletService.withdraw(request.getAccountId(), request.getAmount()))
                         .build()
         );
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<ApiResponseDTO> transfer(@RequestBody Map<String, Object> request) {
-        walletService.transfer(
-                Long.valueOf(request.get("fromAccountId").toString()),
-                Long.valueOf(request.get("toAccountId").toString()),
-                Double.valueOf(request.get("amount").toString())
-        );
+    public ResponseEntity<ApiResponseDTO> transfer(@Valid @RequestBody TransferRequestDTO request) {
+        walletService.transfer(request.getFromAccountId(), request.getToAccountId(), request.getAmount());
         return ResponseEntity.ok(
                 ApiResponseDTO.builder()
                         .status(200)
