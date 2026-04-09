@@ -6,6 +6,7 @@ import com.example.wallet_service.repository.AccountRepository;
 import com.example.wallet_service.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final WalletRepository walletRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Account createAccount(String name, String email, String password) {
@@ -35,7 +36,6 @@ public class AccountService {
                 .account(account)
                 .build();
 
-        account.setPassword(passwordEncoder.encode(password));
         accountRepository.save(account);
         walletRepository.save(wallet);
 

@@ -45,4 +45,5 @@ public class WalletController {
     public Wallet getWallet(@PathVariable Long accountId) {
         return walletService.getWallet(accountId);
     }
+
 }
