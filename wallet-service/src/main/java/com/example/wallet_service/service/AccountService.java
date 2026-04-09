@@ -5,7 +5,6 @@ import com.example.wallet_service.entity.Wallet;
 import com.example.wallet_service.repository.AccountRepository;
 import com.example.wallet_service.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
