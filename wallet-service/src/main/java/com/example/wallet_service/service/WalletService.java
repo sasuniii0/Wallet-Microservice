@@ -2,6 +2,8 @@ package com.example.wallet_service.service;
 
 import com.example.wallet_service.entity.Transaction;
 import com.example.wallet_service.entity.Wallet;
+import com.example.wallet_service.exceptions.InsufficientBalanceException;
+import com.example.wallet_service.exceptions.ResourceNotFoundException;
 import com.example.wallet_service.repository.AccountRepository;
 import com.example.wallet_service.repository.TransactionRepository;
 import com.example.wallet_service.repository.WalletRepository;
@@ -21,7 +23,7 @@ public class WalletService {
     @Transactional
     public Wallet deposit(Long accountId, Double amount) {
         Wallet wallet = walletRepository.findByAccount_Id(accountId)
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
         wallet.setBalance(wallet.getBalance() + amount);
 
@@ -40,10 +42,10 @@ public class WalletService {
     @Transactional
     public Wallet withdraw(Long accountId, Double amount) {
         Wallet wallet = walletRepository.findByAccount_Id(accountId)
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
         if (wallet.getBalance() < amount) {
-            throw new RuntimeException("Insufficient balance");
+            throw new InsufficientBalanceException("Insufficient balance");
         }
 
         wallet.setBalance(wallet.getBalance() - amount);
@@ -63,13 +65,13 @@ public class WalletService {
     @Transactional
     public String transfer(Long fromAccountId, Long toAccountId, Double amount) {
         Wallet fromWallet = walletRepository.findByAccount_Id(fromAccountId)
-                .orElseThrow(() -> new RuntimeException("Sender wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Sender Wallet not found"));
 
         Wallet toWallet = walletRepository.findByAccount_Id(toAccountId)
-                .orElseThrow(() -> new RuntimeException("Receiver wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Receiver wallet not found"));
 
         if (fromWallet.getBalance() < amount) {
-            throw new RuntimeException("Insufficient balance for transfer");
+            throw new InsufficientBalanceException("Insufficient balance for transfer");
         }
 
         fromWallet.setBalance(fromWallet.getBalance() - amount);
@@ -92,6 +94,6 @@ public class WalletService {
 
     public Wallet getWallet(Long accountId) {
         return walletRepository.findByAccount_Id(accountId)
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
     }
 }

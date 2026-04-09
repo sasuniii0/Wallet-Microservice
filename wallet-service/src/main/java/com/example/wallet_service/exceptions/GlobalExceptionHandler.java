@@ -20,4 +20,35 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ApiResponseDTO> handleResourceAlreadyExist(ResourceAlreadyExistException e) {
+        return new ResponseEntity<>(
+                new ApiResponseDTO(
+                        409,
+                        e.getMessage(),
+                        null
+                ), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ApiResponseDTO> handleResourceNotFound(ResourceNotFoundException e) {
+        return new ResponseEntity<>(
+                new ApiResponseDTO(
+                        404,
+                        e.getMessage(),
+                        null
+                ), HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ApiResponseDTO> handleInsufficientBalance(InsufficientBalanceException e) {
+        return new ResponseEntity<>(
+                new ApiResponseDTO(
+                        406,
+                        e.getMessage(),
+                        null
+                ), HttpStatus.NOT_ACCEPTABLE
+        );
+    }
 }

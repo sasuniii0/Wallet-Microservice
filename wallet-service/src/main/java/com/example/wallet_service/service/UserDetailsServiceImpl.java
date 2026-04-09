@@ -1,6 +1,7 @@
 package com.example.wallet_service.service;
 
 import com.example.wallet_service.entity.Account;
+import com.example.wallet_service.exceptions.ResourceNotFoundException;
 import com.example.wallet_service.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -18,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Account account = accountRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
         return User.builder()
                 .username(account.getEmail())

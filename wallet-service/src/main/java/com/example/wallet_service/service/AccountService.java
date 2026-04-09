@@ -2,6 +2,8 @@ package com.example.wallet_service.service;
 
 import com.example.wallet_service.entity.Account;
 import com.example.wallet_service.entity.Wallet;
+import com.example.wallet_service.exceptions.ResourceAlreadyExistException;
+import com.example.wallet_service.exceptions.ResourceNotFoundException;
 import com.example.wallet_service.repository.AccountRepository;
 import com.example.wallet_service.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ public class AccountService {
     @Transactional
     public Account createAccount(String name, String email, String password) {
         if (accountRepository.findByEmail(email).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new ResourceAlreadyExistException(email);
         }
 
         Account account = Account.builder()
@@ -43,7 +45,7 @@ public class AccountService {
 
     public Account getAccount(Long id) {
         return accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
     }
 
     @Transactional
