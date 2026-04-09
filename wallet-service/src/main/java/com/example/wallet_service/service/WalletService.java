@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class WalletService {
+
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
 
@@ -21,40 +22,76 @@ public class WalletService {
     public Wallet deposit(Long accountId, Double amount) {
         Wallet wallet = walletRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
-        wallet.setBalance(wallet.getBalance() + amount);
-        walletRepository.save(wallet);
 
-        transactionRepository.save(new Transaction(null, amount, "DEPOSIT", LocalDateTime.now(), accountId, null));
-        return wallet;
+        wallet.setBalance(wallet.getBalance() + amount);
+
+        Transaction txn = Transaction.builder()
+                .amount(amount)
+                .type("DEPOSIT")
+                .timestamp(LocalDateTime.now())
+                .fromAccountId(null)
+                .toAccountId(accountId)
+                .build();
+
+        transactionRepository.save(txn);
+        return walletRepository.save(wallet);
     }
 
     @Transactional
     public Wallet withdraw(Long accountId, Double amount) {
         Wallet wallet = walletRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
-        if (wallet.getBalance() < amount) throw new RuntimeException("Insufficient balance");
-        wallet.setBalance(wallet.getBalance() - amount);
-        walletRepository.save(wallet);
 
-        transactionRepository.save(new Transaction(null, amount, "WITHDRAW", LocalDateTime.now(), accountId, null));
-        return wallet;
+        if (wallet.getBalance() < amount) {
+            throw new RuntimeException("Insufficient balance");
+        }
+
+        wallet.setBalance(wallet.getBalance() - amount);
+
+        Transaction txn = Transaction.builder()
+                .amount(amount)
+                .type("WITHDRAW")
+                .timestamp(LocalDateTime.now())
+                .fromAccountId(accountId)
+                .toAccountId(null)
+                .build();
+
+        transactionRepository.save(txn);
+        return walletRepository.save(wallet);
     }
 
     @Transactional
-    public void transfer(Long fromAccountId, Long toAccountId, Double amount) {
+    public String transfer(Long fromAccountId, Long toAccountId, Double amount) {
         Wallet fromWallet = walletRepository.findByAccountId(fromAccountId)
                 .orElseThrow(() -> new RuntimeException("Sender wallet not found"));
+
         Wallet toWallet = walletRepository.findByAccountId(toAccountId)
                 .orElseThrow(() -> new RuntimeException("Receiver wallet not found"));
 
-        if (fromWallet.getBalance() < amount) throw new RuntimeException("Insufficient balance");
+        if (fromWallet.getBalance() < amount) {
+            throw new RuntimeException("Insufficient balance for transfer");
+        }
 
         fromWallet.setBalance(fromWallet.getBalance() - amount);
         toWallet.setBalance(toWallet.getBalance() + amount);
 
+        Transaction txn = Transaction.builder()
+                .amount(amount)
+                .type("TRANSFER")
+                .timestamp(LocalDateTime.now())
+                .fromAccountId(fromAccountId)
+                .toAccountId(toAccountId)
+                .build();
+
+        transactionRepository.save(txn);
         walletRepository.save(fromWallet);
         walletRepository.save(toWallet);
 
-        transactionRepository.save(new Transaction(null, amount, "TRANSFER", LocalDateTime.now(), fromAccountId, toAccountId));
+        return "Transfer successful";
+    }
+
+    public Wallet getWallet(Long accountId) {
+        return walletRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new RuntimeException("Wallet not found"));
     }
 }
