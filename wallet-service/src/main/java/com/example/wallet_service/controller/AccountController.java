@@ -1,11 +1,12 @@
 package com.example.wallet_service.controller;
 
-import com.example.wallet_service.entity.Account;
+import com.example.wallet_service.dto.ApiResponseDTO;
 import com.example.wallet_service.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -15,37 +16,67 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/create")
-    public Account createAccount(@RequestBody Map<String, String> request) {
-        return accountService.createAccount(
-                request.get("name"),
-                request.get("email"),
-                request.get("password")
+    public ResponseEntity<ApiResponseDTO> createAccount(@RequestBody Map<String, String> request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ApiResponseDTO.builder()
+                        .status(201)
+                        .message("Account created successfully")
+                        .data(accountService.createAccount(
+                                request.get("name"),
+                                request.get("email"),
+                                request.get("password")
+                        ))
+                        .build()
         );
     }
 
     @GetMapping("/{id}")
-    public Account getAccount(@PathVariable Long id) {
-        return accountService.getAccount(id);
+    public ResponseEntity<ApiResponseDTO> getAccount(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                ApiResponseDTO.builder()
+                        .status(200)
+                        .message("Account fetched successfully")
+                        .data(accountService.getAccount(id))
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")
-    public Account updateAccount(@PathVariable Long id, @RequestBody Map<String, String> request) {
-        return accountService.updateAccount(
-                id,
-                request.get("name"),
-                request.get("email"),
-                request.get("password")
+    public ResponseEntity<ApiResponseDTO> updateAccount(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        return ResponseEntity.ok(
+                ApiResponseDTO.builder()
+                        .status(200)
+                        .message("Account updated successfully")
+                        .data(accountService.updateAccount(
+                                id,
+                                request.get("name"),
+                                request.get("email"),
+                                request.get("password")
+                        ))
+                        .build()
         );
     }
 
     @DeleteMapping("/{id}")
-    public String deleteAccount(@PathVariable Long id) {
+    public ResponseEntity<ApiResponseDTO> deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
-        return "Account deleted successfully";
+        return ResponseEntity.ok(
+                ApiResponseDTO.builder()
+                        .status(200)
+                        .message("Account deleted successfully")
+                        .data(null)
+                        .build()
+        );
     }
 
     @GetMapping("/all")
-    public List<Account> getAllAccounts() {
-        return accountService.getAllAccounts();
+    public ResponseEntity<ApiResponseDTO> getAllAccounts() {
+        return ResponseEntity.ok(
+                ApiResponseDTO.builder()
+                        .status(200)
+                        .message("Accounts fetched successfully")
+                        .data(accountService.getAllAccounts())
+                        .build()
+        );
     }
 }
